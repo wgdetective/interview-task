@@ -1,4 +1,4 @@
-package com.example.interview_task;
+package com.example.interview;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
