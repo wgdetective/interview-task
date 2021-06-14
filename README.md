@@ -13,7 +13,7 @@ Datasource:
 [
     {      
         "id" : 1,      
-        "question" : "What is your favorite color?",
+        "name" : "What is your favorite color?",
         "answers" : [
             "Black",
             "White",
