@@ -8,7 +8,7 @@
 
 * As a User, I want to get random question that wasn't answered by me
 
-Datasource:
+### JSON Datasource
 ```json
 [
     {      
@@ -40,3 +40,48 @@ Datasource:
         ]  
     }
 ]
+```
+
+### CVS Datasource
+```cvs
+"id", "name", "answers"
+1, "What is your favorite color?","Black;White;Red;Other"
+2, "Do you like this interview?", "Yes;No;Not sure"
+3, "Instagram or TikTok?", "Instagram;TikTok;Other"
+```
+
+### XML source
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+	<question>
+		<id>1</id>
+		<name>What is your favorite color?</name>
+        <answers>
+            <value>Black</value>
+            <value>White</value>
+            <value>Red</value>
+            <value>Other</value>
+        </answers>
+    </question>
+    <question>
+		<id>2</id>
+		<name>Do you like this interview?</name>
+        <answers>
+            <value>Yes</value>
+            <value>No</value>
+            <value>Not sure</value>
+        </answers>
+    </question>
+    <question>
+		<id>3</id>
+		<name>Instagram or TikTok?</name>
+
+        <answers>
+            <value>Instagram</value>
+            <value>TikTok</value>
+            <value>Other</value>
+        </answers>        
+    </question>
+</root>
+```
