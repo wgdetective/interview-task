@@ -2,11 +2,20 @@
 
 ## Task 1. Q&A
 
+Rest application for conducting surveys.
+
 1) As a User, I want to get random question
 2) As a User, I want to answer question
 3) As a User, I want to get statistics on questions that was answered by me
 
+### Additional requirements:
 * As a User, I want to get random question that wasn't answered by me
+* As a User, I want to change my answer
+
+### Additional architecture requirements:
+* highload
+* multiple sources of data
+* security vulnerabilities
 
 ### JSON Datasource
 ```json
