@@ -1,16 +1,12 @@
 # Interview task
 
-## Task 1. Q&A
+## Task 2. Voting system
 
-Rest application for conducting surveys.
+Rest application for voting in elections.
 
-1) As a User, I want to get random question
-2) As a User, I want to answer question
-3) As a User, I want to get statistics on questions that was answered by me
-
-### Additional requirements:
-* As a User, I want to get random question that wasn't answered by me
-* As a User, I want to change my answer
+1) As a User, I want to get list of candidates 
+2) As a User, I want to vote for the candidate
+3) As a User, I want to get statistics on current status of elections
 
 ### Additional architecture requirements:
 * highload
@@ -22,31 +18,15 @@ Rest application for conducting surveys.
 [
     {      
         "id" : 1,      
-        "name" : "What is your favorite color?",
-        "answers" : [
-            "Black",
-            "White",
-            "Red",
-            "Other"
-        ]  
+        "name" : "Alexander the Eternal"
     },
     {
         "id" : 2,
-        "name" : "Do you like this interview?",
-        "answers" : [
-            "Yes",
-            "No",
-            "Not sure"
-        ]  
+        "name" : "Volodimir"
     },
     {
         "id" : 3,
-        "name" : "Instagram or TikTok?",
-        "answers" : [
-            "Instagram",
-            "TikTok",
-            "Other"
-        ]  
+        "name" : "Other"
     }
 ]
 ```
@@ -54,9 +34,9 @@ Rest application for conducting surveys.
 ### CVS Datasource
 ```cvs
 "id","name","answers"
-1,"What is your favorite color?","Black;White;Red;Other"
-2,"Do you like this interview?","Yes;No;Not sure"
-3,"Instagram or TikTok?","Instagram;TikTok;Other"
+1,"Alexander the Eternal"
+2,"Volodimir"
+3,"Other"
 ```
 
 ### XML source
@@ -65,31 +45,15 @@ Rest application for conducting surveys.
 <root>
     <question>
         <id>1</id>
-        <name>What is your favorite color?</name>
-        <answers>
-            <value>Black</value>
-            <value>White</value>
-            <value>Red</value>
-            <value>Other</value>
-        </answers>
+        <name>Alexander the Eternal</name>
     </question>
     <question>
         <id>2</id>
-        <name>Do you like this interview?</name>
-        <answers>
-            <value>Yes</value>
-            <value>No</value>
-            <value>Not sure</value>
-        </answers>
+        <name>Volodimir</name>
     </question>
     <question>
         <id>3</id>
-        <name>Instagram or TikTok?</name>
-        <answers>
-            <value>Instagram</value>
-            <value>TikTok</value>
-            <value>Other</value>
-        </answers>
+        <name>Other</name>
     </question>
 </root>
 ```
