@@ -43,17 +43,17 @@ Rest application for voting in elections.
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <root>
-    <question>
+    <candidate>
         <id>1</id>
         <name>Alexander the Eternal</name>
-    </question>
-    <question>
+    </candidate>
+    <candidate>
         <id>2</id>
         <name>Volodimir</name>
-    </question>
-    <question>
+    </candidate>
+    <candidate>
         <id>3</id>
         <name>Other</name>
-    </question>
+    </candidate>
 </root>
 ```
