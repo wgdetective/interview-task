@@ -1,95 +1,123 @@
 # Interview task
 
-## Task 1. Q&A
+## Task 3. Library
 
-Rest application for conducting surveys.
+Rest application for library.
 
-1) As a User, I want to get random question
-2) As a User, I want to answer question
-3) As a User, I want to get statistics on questions that was answered by me
+1) As a User, I want to get list of available books
+2) As a User, I want to book some books
+3) As a User, I want to list of books that was booked by me
 
 ### Additional requirements:
-* As a User, I want to get random question that wasn't answered by me
-* As a User, I want to change my answer
+
+* As a User, I want to return some of my books
 
 ### Additional architecture requirements:
+
 * highload
 * multiple sources of data
 * security vulnerabilities
 
 ### JSON Datasource
+
 ```json
 [
-    {      
-        "id" : 1,      
-        "name" : "What is your favorite color?",
-        "answers" : [
-            "Black",
-            "White",
-            "Red",
-            "Other"
-        ]  
-    },
-    {
-        "id" : 2,
-        "name" : "Do you like this interview?",
-        "answers" : [
-            "Yes",
-            "No",
-            "Not sure"
-        ]  
-    },
-    {
-        "id" : 3,
-        "name" : "Instagram or TikTok?",
-        "answers" : [
-            "Instagram",
-            "TikTok",
-            "Other"
-        ]  
-    }
+  {
+    "id": 1,
+    "name": "Harry Potter and the Philosopher's Stone",
+    "author": "Joanne Rowling"
+  },
+  {
+    "id": 2,
+    "name": "The Lord of the Rings: The Fellowship of the Ring",
+    "author" : "John Ronald Reuel Tolkien"
+  },
+  {
+    "id": 3,
+    "name": "Epam handbook",
+    "author" : "Epam"
+  }
 ]
 ```
 
-### CVS Datasource
-```cvs
-"id","name","answers"
-1,"What is your favorite color?","Black;White;Red;Other"
-2,"Do you like this interview?","Yes;No;Not sure"
-3,"Instagram or TikTok?","Instagram;TikTok;Other"
-```
+[comment]: <> (### CVS Datasource)
 
-### XML source
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<root>
-    <question>
-        <id>1</id>
-        <name>What is your favorite color?</name>
-        <answers>
-            <value>Black</value>
-            <value>White</value>
-            <value>Red</value>
-            <value>Other</value>
-        </answers>
-    </question>
-    <question>
-        <id>2</id>
-        <name>Do you like this interview?</name>
-        <answers>
-            <value>Yes</value>
-            <value>No</value>
-            <value>Not sure</value>
-        </answers>
-    </question>
-    <question>
-        <id>3</id>
-        <name>Instagram or TikTok?</name>
-        <answers>
-            <value>Instagram</value>
-            <value>TikTok</value>
-            <value>Other</value>
-        </answers>
-    </question>
-</root>
-```
+[comment]: <> (```cvs)
+
+[comment]: <> ("id","name","author")
+
+[comment]: <> (1,"What is your favorite color?","Black;White;Red;Other")
+
+[comment]: <> (2,"Do you like this interview?","Yes;No;Not sure")
+
+[comment]: <> (3,"Instagram or TikTok?","Instagram;TikTok;Other")
+
+[comment]: <> (```)
+
+[comment]: <> (### XML source)
+
+[comment]: <> (```xml)
+
+[comment]: <> (<?xml version="1.0" encoding="UTF-8" ?>)
+
+[comment]: <> (<root>)
+
+[comment]: <> (    <question>)
+
+[comment]: <> (        <id>1</id>)
+
+[comment]: <> (        <name>What is your favorite color?</name>)
+
+[comment]: <> (        <answers>)
+
+[comment]: <> (            <value>Black</value>)
+
+[comment]: <> (            <value>White</value>)
+
+[comment]: <> (            <value>Red</value>)
+
+[comment]: <> (            <value>Other</value>)
+
+[comment]: <> (        </answers>)
+
+[comment]: <> (    </question>)
+
+[comment]: <> (    <question>)
+
+[comment]: <> (        <id>2</id>)
+
+[comment]: <> (        <name>Do you like this interview?</name>)
+
+[comment]: <> (        <answers>)
+
+[comment]: <> (            <value>Yes</value>)
+
+[comment]: <> (            <value>No</value>)
+
+[comment]: <> (            <value>Not sure</value>)
+
+[comment]: <> (        </answers>)
+
+[comment]: <> (    </question>)
+
+[comment]: <> (    <question>)
+
+[comment]: <> (        <id>3</id>)
+
+[comment]: <> (        <name>Instagram or TikTok?</name>)
+
+[comment]: <> (        <answers>)
+
+[comment]: <> (            <value>Instagram</value>)
+
+[comment]: <> (            <value>TikTok</value>)
+
+[comment]: <> (            <value>Other</value>)
+
+[comment]: <> (        </answers>)
+
+[comment]: <> (    </question>)
+
+[comment]: <> (</root>)
+
+[comment]: <> (```)
