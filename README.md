@@ -33,7 +33,7 @@ Rest application for voting in elections.
 
 ### CVS Datasource
 ```cvs
-"id","name","answers"
+"id","name"
 1,"Alexander the Eternal"
 2,"Volodimir"
 3,"Other"
