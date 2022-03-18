@@ -1,0 +1,30 @@
+[
+  {
+    "id" : 1,
+    "name" : "What is your favorite color?",
+    "answers" : [
+      "Black",
+      "White",
+      "Red",
+      "Other"
+    ]
+  },
+  {
+    "id" : 2,
+    "name" : "Do you like this interview?",
+    "answers" : [
+      "Yes",
+      "No",
+      "Not sure"
+    ]
+  },
+  {
+    "id" : 3,
+    "name" : "Instagram or TikTok?",
+    "answers" : [
+      "Instagram",
+      "TikTok",
+      "Other"
+    ]
+  }
+]
