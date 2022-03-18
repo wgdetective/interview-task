@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 @ControllerAdvice
 @ResponseBody
-public class ExceptionController {
+public class ExceptionAdvice {
 
     @ExceptionHandler(QuestionsNotFoundException.class)
     public ResponseEntity<?> questionsNotFoundException(Exception e){
