@@ -4,15 +4,16 @@ import com.example.interview.exceptions.QuestionsNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 
 @ControllerAdvice
 @ResponseBody
-public class ExceptionHandler {
+public class ControllerExceptionHandler {
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(QuestionsNotFoundException.class)
+    @ExceptionHandler(QuestionsNotFoundException.class)
     public ResponseEntity<?> questionsNotFoundException(Exception e){
         HashMap<String,String> response = new HashMap<>();
         response.put("Error", e.getMessage());
