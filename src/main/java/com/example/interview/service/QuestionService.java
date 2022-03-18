@@ -1,18 +1,18 @@
 package com.example.interview.service;
 
-import com.example.interview.dao.QuestionDao;
-import com.example.interview.entity.Question;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Random;
+
+import com.example.interview.entity.Question;
+import com.example.interview.repository.QuestionRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class QuestionService {
 
-    private final QuestionDao questionDao;
+    private final QuestionRepository questionDao;
 
     public Question retrieveRandomQuestion() {
         List<Question> all = questionDao.findAll();
