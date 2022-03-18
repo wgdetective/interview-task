@@ -10,6 +10,4 @@ public class Question {
     private Long id;
     private String name;
     private List<String> answers;
-
-
 }

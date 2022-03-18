@@ -2,19 +2,21 @@ package com.example.interview.service;
 
 import com.example.interview.dao.QuestionDao;
 import com.example.interview.entity.Question;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Random;
+
+@Service
+@RequiredArgsConstructor
 public class QuestionService {
 
     private final QuestionDao questionDao;
 
-    @Autowired
-    public QuestionService(QuestionDao questionDao) {
-        this.questionDao = questionDao;
-    }
-
-
-    public Question getQuestion() {
-        return questionDao.getRandomQuestion();
+    public Question retrieveRandomQuestion() {
+        List<Question> all = questionDao.findAll();
+        Random random = new Random();
+        return all.get(random.nextInt(all.size()));
     }
 }

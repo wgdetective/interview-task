@@ -13,7 +13,6 @@ import java.util.HashMap;
 @ResponseBody
 public class ExceptionController {
 
-
     @ExceptionHandler(QuestionsNotFoundException.class)
     public ResponseEntity<?> questionsNotFoundException(Exception e){
         HashMap<String,String> response = new HashMap<>();
