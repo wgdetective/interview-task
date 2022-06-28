@@ -4,9 +4,12 @@
 
 Rest application for library.
 
-1) As a User, I want to get list of available books
-2) As a User, I want to book some books
-3) As a User, I want to list of books that was booked by me
+1) As a User, I want to get list of all books
+2) As a User, I want to reserve some books
+3) As a User, I want to get list of available books
+4) As a User, I want to list of books that was reserved by me
+
+For PoC let's use one of listed below data sources, but in future database will be used as datasource for books.
 
 ### Additional requirements:
 
@@ -25,99 +28,19 @@ Rest application for library.
   {
     "id": 1,
     "name": "Harry Potter and the Philosopher's Stone",
-    "author": "Joanne Rowling"
+    "author": "Joanne Rowling",
+    "copies": 50
   },
   {
     "id": 2,
     "name": "The Lord of the Rings: The Fellowship of the Ring",
-    "author" : "John Ronald Reuel Tolkien"
+    "author" : "John Ronald Reuel Tolkien",
+    "copies": 10
   },
   {
     "id": 3,
     "name": "Epam handbook",
-    "author" : "Epam"
+    "author" : "Epam",
+    "copies": 1
   }
 ]
-```
-
-[comment]: <> (### CVS Datasource)
-
-[comment]: <> (```cvs)
-
-[comment]: <> ("id","name","author")
-
-[comment]: <> (1,"What is your favorite color?","Black;White;Red;Other")
-
-[comment]: <> (2,"Do you like this interview?","Yes;No;Not sure")
-
-[comment]: <> (3,"Instagram or TikTok?","Instagram;TikTok;Other")
-
-[comment]: <> (```)
-
-[comment]: <> (### XML source)
-
-[comment]: <> (```xml)
-
-[comment]: <> (<?xml version="1.0" encoding="UTF-8" ?>)
-
-[comment]: <> (<root>)
-
-[comment]: <> (    <question>)
-
-[comment]: <> (        <id>1</id>)
-
-[comment]: <> (        <name>What is your favorite color?</name>)
-
-[comment]: <> (        <answers>)
-
-[comment]: <> (            <value>Black</value>)
-
-[comment]: <> (            <value>White</value>)
-
-[comment]: <> (            <value>Red</value>)
-
-[comment]: <> (            <value>Other</value>)
-
-[comment]: <> (        </answers>)
-
-[comment]: <> (    </question>)
-
-[comment]: <> (    <question>)
-
-[comment]: <> (        <id>2</id>)
-
-[comment]: <> (        <name>Do you like this interview?</name>)
-
-[comment]: <> (        <answers>)
-
-[comment]: <> (            <value>Yes</value>)
-
-[comment]: <> (            <value>No</value>)
-
-[comment]: <> (            <value>Not sure</value>)
-
-[comment]: <> (        </answers>)
-
-[comment]: <> (    </question>)
-
-[comment]: <> (    <question>)
-
-[comment]: <> (        <id>3</id>)
-
-[comment]: <> (        <name>Instagram or TikTok?</name>)
-
-[comment]: <> (        <answers>)
-
-[comment]: <> (            <value>Instagram</value>)
-
-[comment]: <> (            <value>TikTok</value>)
-
-[comment]: <> (            <value>Other</value>)
-
-[comment]: <> (        </answers>)
-
-[comment]: <> (    </question>)
-
-[comment]: <> (</root>)
-
-[comment]: <> (```)
