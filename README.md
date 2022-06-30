@@ -1,6 +1,6 @@
 # Interview task
 
-## Task 3. Library
+## Task 4. New library
 
 Rest application for library.
 
@@ -17,7 +17,7 @@ For PoC let's use one of listed below data sources, but in future database will 
 
 ### Additional architecture requirements:
 
-* highload
+* high-load
 * multiple sources of data
 * security vulnerabilities
 
