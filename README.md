@@ -26,19 +26,19 @@ For PoC let's use one of listed below data sources, but in future database will 
 ```json
 [
   {
-    "id": 1,
+    "id": "1",
     "name": "Harry Potter and the Philosopher's Stone",
     "author": "Joanne Rowling",
     "copies": 50
   },
   {
-    "id": 2,
+    "id": "2",
     "name": "The Lord of the Rings: The Fellowship of the Ring",
     "author" : "John Ronald Reuel Tolkien",
     "copies": 10
   },
   {
-    "id": 3,
+    "id": "3",
     "name": "Epam handbook",
     "author" : "Epam",
     "copies": 1
