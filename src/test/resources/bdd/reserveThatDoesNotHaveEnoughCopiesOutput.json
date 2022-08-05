@@ -1,0 +1,6 @@
+{
+  "userFullName" : "Test User",
+  "bookId" : "3",
+  "reservationStatus": "FAIL",
+  "message" : "There are no more copies of such book."
+}

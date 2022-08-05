@@ -2,6 +2,7 @@ package com.example.interview.repository;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -38,5 +39,10 @@ public class JsonFileBookRepository implements BookRepository {
     @Override
     public List<Book> findAll() {
         return entities.stream().map(mapper::map).collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Book> findBookById(final String id) {
+        return entities.stream().filter(b -> b.getId().equals(id)).findAny().map(mapper::map);
     }
 }
