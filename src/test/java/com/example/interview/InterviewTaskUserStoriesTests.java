@@ -86,6 +86,19 @@ public class InterviewTaskUserStoriesTests {
                 .andExpect(content().json(expectedJson));
     }
 
+    @Test
+    @Order(4)
+    void testGetReservations() throws Exception {
+        // given
+        final var expectedJson = readResource("bdd/getReservationsOutput.json");
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/reservations?userFullName=Test User"))
+                // then
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedJson));
+    }
+
     private String readResource(final String resourceName) throws IOException {
         try (final var resourceAsStream = this.getClass().getClassLoader().getResourceAsStream(resourceName)) {
             return new String(Objects.requireNonNull(resourceAsStream).readAllBytes());

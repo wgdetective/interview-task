@@ -77,6 +77,10 @@ public class ReservationService {
             throw new NoSuchBookException();
         }
     }
+
+    public List<Reservation> getReservations(final String userFullName) {
+        return reservationRepository.findAllByUserFullName(userFullName);
+    }
 }
 
 

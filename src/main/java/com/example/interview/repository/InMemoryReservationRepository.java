@@ -1,6 +1,7 @@
 package com.example.interview.repository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,8 @@ public class InMemoryReservationRepository implements ReservationRepository {
 
     private final Map<String, List<Reservation>> reservationsByBookId = new HashMap<>();
 
+    private final Map<String, List<Reservation>> reservationsByUserFullName = new HashMap<>();
+
     @Override
     public long getCountOfOpenReservationsByBookId(final String bookId) {
         final var reservations = reservationsByBookId.get(bookId);
@@ -22,11 +25,28 @@ public class InMemoryReservationRepository implements ReservationRepository {
 
     @Override
     public Reservation save(final Reservation reservation) {
+        reservation.setId(UUID.randomUUID().toString());
+        putToReservationsByBookId(reservation);
+        putToReservationsByUserFullName(reservation);
+        return reservation;
+    }
+
+    private void putToReservationsByBookId(final Reservation reservation) {
         if (!reservationsByBookId.containsKey(reservation.getBookId())) {
             reservationsByBookId.put(reservation.getBookId(), new ArrayList<>());
         }
-        reservation.setId(UUID.randomUUID().toString());
         reservationsByBookId.get(reservation.getBookId()).add(reservation);
-        return reservation;
+    }
+
+    private void putToReservationsByUserFullName(final Reservation reservation) {
+        if (!reservationsByUserFullName.containsKey(reservation.getUserFullName())) {
+            reservationsByUserFullName.put(reservation.getUserFullName(), new ArrayList<>());
+        }
+        reservationsByUserFullName.get(reservation.getUserFullName()).add(reservation);
+    }
+
+    @Override
+    public List<Reservation> findAllByUserFullName(final String userFullName) {
+        return reservationsByUserFullName.getOrDefault(userFullName, Collections.emptyList());
     }
 }
