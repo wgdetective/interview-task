@@ -2,6 +2,7 @@ package com.example.interview.controller;
 
 import com.example.interview.controller.mapper.ReservationDtoMapper;
 import com.example.interview.controller.mapper.ReservationRequestDtoMapper;
+import com.example.interview.controller.mapper.ReservationUpdateRequestDtoMapper;
 import com.example.interview.service.ReservationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest({ ReservationController.class, ReservationDtoMapper.class, ReservationRequestDtoMapper.class })
+@WebMvcTest({ ReservationController.class, ReservationDtoMapper.class, ReservationRequestDtoMapper.class,
+        ReservationUpdateRequestDtoMapper.class })
 public class ReservationControllerTest {
 
     @Autowired

@@ -7,11 +7,14 @@ import java.util.logging.Level;
 
 import com.example.interview.exception.NoAvailableCopiesException;
 import com.example.interview.exception.NoSuchBookException;
+import com.example.interview.exception.NoSuchReservationException;
 import com.example.interview.exception.ReservationException;
+import com.example.interview.exception.ReservationOperationIsNotSupported;
 import com.example.interview.model.Book;
 import com.example.interview.model.Reservation;
 import com.example.interview.model.ReservationRequest;
 import com.example.interview.model.ReservationStatus;
+import com.example.interview.model.ReservationUpdateRequest;
 import com.example.interview.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -59,7 +62,7 @@ public class ReservationService {
                 final Reservation reservation = Reservation.builder()
                         .userFullName(request.getUserFullName())
                         .bookId(request.getBookId())
-                        .reservationDateTime(LocalDateTime.now())
+                        .createDateTime(LocalDateTime.now())
                         .reservationStatus(ReservationStatus.SUCCESS)
                         .build();
                 return reservationRepository.save(reservation);
@@ -80,6 +83,34 @@ public class ReservationService {
 
     public List<Reservation> getReservations(final String userFullName) {
         return reservationRepository.findAllByUserFullName(userFullName);
+    }
+
+    public Reservation updateReservation(final ReservationUpdateRequest request) throws ReservationException {
+        final Reservation reservation = validateAndGetReservation(request);
+        reservation.setReservationStatus(request.getReservationStatus());
+        reservation.setUpdateDateTime(LocalDateTime.now());
+        return reservationRepository.save(reservation);
+    }
+
+    private Reservation validateAndGetReservation(final ReservationUpdateRequest request)
+            throws ReservationException {
+        if (!request.getReservationStatus().equals(ReservationStatus.CLOSED)) {
+            log.log(Level.SEVERE, "Only CLOSE status update is supported");
+            throw new ReservationOperationIsNotSupported();
+        }
+        final Optional<Reservation> reservationOptional = reservationRepository.findById(request.getReservationId());
+        if (reservationOptional.isEmpty()) {
+            log.log(Level.SEVERE, "No reservation with id=" + request.getReservationId());
+            throw new NoSuchReservationException();
+        } else {
+            final var reservation = reservationOptional.get();
+            if (!reservation.getReservationStatus().equals(ReservationStatus.SUCCESS)) {
+                log.log(Level.SEVERE, "Only SUCCESS status update is supported");
+                throw new ReservationOperationIsNotSupported();
+            } else {
+                return reservation;
+            }
+        }
     }
 }
 
