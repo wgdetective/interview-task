@@ -1,9 +1,6 @@
-
 package com.example.interview.controller.mapper;
 
-import com.example.interview.dto.BookDto;
 import com.example.interview.dto.ReservationDto;
-import com.example.interview.model.Book;
 import com.example.interview.model.Reservation;
 import org.mapstruct.Mapper;
 

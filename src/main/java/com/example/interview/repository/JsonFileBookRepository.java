@@ -3,7 +3,6 @@ package com.example.interview.repository;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -29,7 +28,7 @@ public class JsonFileBookRepository implements BookRepository {
 
     @PostConstruct
     public void init() throws IOException {
-        try (var is = this.getClass().getClassLoader().getResourceAsStream(BOOKS_FILE_NAME)) {
+        try (final var is = this.getClass().getClassLoader().getResourceAsStream(BOOKS_FILE_NAME)) {
             entities = objectMapper.readValue(is, new TypeReference<>() {
 
             });
@@ -38,11 +37,11 @@ public class JsonFileBookRepository implements BookRepository {
 
     @Override
     public List<Book> findAll() {
-        return entities.stream().map(mapper::map).collect(Collectors.toList());
+        return entities.stream().map(mapper::map).toList();
     }
 
     @Override
-    public Optional<Book> findBookById(final String id) {
+    public Optional<Book> findById(final String id) {
         return entities.stream().filter(b -> b.getId().equals(id)).findAny().map(mapper::map);
     }
 }

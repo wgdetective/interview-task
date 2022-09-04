@@ -7,10 +7,16 @@ import lombok.Data;
 
 @Data
 public class ReservationDto {
+
     private String id;
+
     private String userFullName;
+
     private String bookId;
+
     private LocalDateTime reservationDateTime;
+
     private ReservationStatus reservationStatus;
+
     private String message;
 }
