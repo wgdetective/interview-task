@@ -1,6 +1,7 @@
 package com.example.interview.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.example.interview.controller.mapper.ReservationDtoMapper;
 import com.example.interview.controller.mapper.ReservationRequestDtoMapper;
@@ -14,6 +15,7 @@ import com.example.interview.model.ReservationStatus;
 import com.example.interview.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,6 +49,11 @@ public class ReservationController {
             reservation.setMessage(getMessageByException(e));
             return ResponseEntity.badRequest().body(mapper.map(reservation));
         }
+    }
+
+    @GetMapping
+    public List<ReservationDto> getReservations(final String userFullName) {
+        return reservationService.getReservations(userFullName).stream().map(mapper::map).toList();
     }
 
     private String getMessageByException(final ReservationException e) {
