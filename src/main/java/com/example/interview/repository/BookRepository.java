@@ -6,7 +6,8 @@ import java.util.Optional;
 import com.example.interview.model.Book;
 
 public interface BookRepository {
+
     List<Book> findAll();
 
-    Optional<Book> findBookById(final String id);
+    Optional<Book> findById(final String id);
 }

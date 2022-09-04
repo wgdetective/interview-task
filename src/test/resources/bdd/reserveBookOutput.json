@@ -1,6 +1,6 @@
 {
-  "userFullName" : "Test User",
-  "bookId" : "3",
+  "userFullName": "Test User",
+  "bookId": "3",
   "reservationStatus": "SUCCESS",
-  "message" : "Book is successfully booked."
+  "message": "Book is successfully booked."
 }

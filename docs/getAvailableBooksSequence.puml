@@ -1,0 +1,11 @@
+@startuml
+
+BookController -> ReservationService : getAvailableBooks
+ReservationService -> BookService : getAllBooks
+BookService -> BookRepository : findAll
+BookService <- BookRepository
+ReservationService <- BookService
+ReservationService -> ReservationRepository : getCountOfOpenReservationsByBookId
+ReservationService <- ReservationRepository
+BookController <- ReservationService
+@enduml

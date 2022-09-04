@@ -2,9 +2,7 @@ package com.example.interview;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.UUID;
 
-import org.hamcrest.core.Is;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -17,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -73,6 +70,19 @@ public class InterviewTaskUserStoriesTests {
                 // then
                 .andDo(print())
                 .andExpect(status().isBadRequest())
+                .andExpect(content().json(expectedJson));
+    }
+
+    @Test
+    @Order(3)
+    void testGetOfAvailableBooks() throws Exception {
+        // given
+        final var expectedJson = readResource("bdd/getAvailableBooksOutput.json");
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/books?available=true"))
+                // then
+                .andDo(print())
+                .andExpect(status().isOk())
                 .andExpect(content().json(expectedJson));
     }
 

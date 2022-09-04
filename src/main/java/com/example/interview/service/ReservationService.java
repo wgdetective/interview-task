@@ -1,6 +1,7 @@
 package com.example.interview.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 
@@ -11,7 +12,6 @@ import com.example.interview.model.Book;
 import com.example.interview.model.Reservation;
 import com.example.interview.model.ReservationRequest;
 import com.example.interview.model.ReservationStatus;
-import com.example.interview.repository.BookRepository;
 import com.example.interview.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 @Log
 public class ReservationService {
 
-    private final BookRepository bookRepository;
+    private final BookService bookService;
 
     private final ReservationRepository reservationRepository;
 
@@ -33,20 +33,29 @@ public class ReservationService {
         try {
             final Book book = validateAndGetBook(bookId);
             return reserveBook(request, book);
-        } catch (NoSuchBookException e) {
+        } catch (final NoSuchBookException e) {
             log.log(Level.SEVERE, "No book with id=" + bookId);
             throw e;
-        } catch (NoAvailableCopiesException e) {
+        } catch (final NoAvailableCopiesException e) {
             log.log(Level.SEVERE, "No available copies of book with id=" + bookId);
             throw e;
         }
     }
 
+    public List<Book> getAvailableBooks() {
+        final var books = bookService.getAll();
+        return books.stream().filter(book -> {
+            final long reservedBooksCount = reservationRepository.getCountOfOpenReservationsByBookId(book.getId());
+            return reservedBooksCount < book.getCopies();
+        }).toList();
+    }
+
     private Reservation reserveBook(final ReservationRequest request, final Book book)
             throws NoAvailableCopiesException {
         synchronized (lock) {
-            final long count = reservationRepository.getCountOfOpenReservationsByBookId(request.getBookId());
-            if (count < book.getCopies()) {
+            final long reservedBooksCount = reservationRepository.getCountOfOpenReservationsByBookId(
+                    request.getBookId());
+            if (reservedBooksCount < book.getCopies()) {
                 final Reservation reservation = Reservation.builder()
                         .userFullName(request.getUserFullName())
                         .bookId(request.getBookId())
@@ -61,7 +70,7 @@ public class ReservationService {
     }
 
     private Book validateAndGetBook(final String bookId) throws NoSuchBookException {
-        final Optional<Book> book = bookRepository.findBookById(bookId);
+        final Optional<Book> book = bookService.getById(bookId);
         if (book.isPresent()) {
             return book.get();
         } else {

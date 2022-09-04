@@ -7,8 +7,10 @@ import org.springframework.lang.NonNull;
 @Data
 @AllArgsConstructor
 public class ReservationRequestDto {
+
     @NonNull
     private String userFullName;
+
     @NonNull
     private String bookId;
 }

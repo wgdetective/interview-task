@@ -27,6 +27,7 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     private final ReservationDtoMapper mapper;
+
     private final ReservationRequestDtoMapper requestMapper;
 
     @PostMapping
@@ -36,7 +37,7 @@ public class ReservationController {
             reservation = reservationService.reserveBook(requestMapper.map(reservationRequestDto));
             reservation.setMessage("Book is successfully booked.");
             return ResponseEntity.ok(mapper.map(reservation));
-        } catch (ReservationException e) {
+        } catch (final ReservationException e) {
             reservation = Reservation.builder()
                     .bookId(reservationRequestDto.getBookId())
                     .userFullName(reservationRequestDto.getUserFullName())
