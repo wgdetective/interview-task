@@ -13,7 +13,7 @@ For PoC let's use one of listed below data sources, but in future database will 
 
 ### Additional requirements:
 
-* As a User, I want to return some of my books
+5) As a User, I want to return some of my books
 
 ### Additional architecture requirements:
 

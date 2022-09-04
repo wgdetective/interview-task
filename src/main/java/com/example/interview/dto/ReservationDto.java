@@ -4,8 +4,10 @@ import java.time.LocalDateTime;
 
 import com.example.interview.model.ReservationStatus;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class ReservationDto {
 
     private String id;
@@ -14,7 +16,9 @@ public class ReservationDto {
 
     private String bookId;
 
-    private LocalDateTime reservationDateTime;
+    private LocalDateTime createDateTime;
+
+    private LocalDateTime updateDateTime;
 
     private ReservationStatus reservationStatus;
 

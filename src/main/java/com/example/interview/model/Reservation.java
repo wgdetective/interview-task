@@ -15,7 +15,9 @@ public class Reservation {
 
     private String bookId;
 
-    private LocalDateTime reservationDateTime;
+    private LocalDateTime createDateTime;
+
+    private LocalDateTime updateDateTime;
 
     private ReservationStatus reservationStatus;
 

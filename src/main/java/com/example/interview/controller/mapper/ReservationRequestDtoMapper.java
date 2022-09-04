@@ -7,7 +7,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface ReservationRequestDtoMapper {
 
-    ReservationRequestDto map(final ReservationRequest reservationRequest);
-
     ReservationRequest map(final ReservationRequestDto reservationRequest);
 }
