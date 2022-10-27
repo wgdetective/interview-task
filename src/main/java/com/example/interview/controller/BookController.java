@@ -1,7 +1,5 @@
 package com.example.interview.controller;
 
-import java.util.List;
-
 import com.example.interview.controller.mapper.BookDtoMapper;
 import com.example.interview.dto.BookDto;
 import com.example.interview.model.Book;
@@ -12,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/v1/books")
@@ -25,8 +24,9 @@ public class BookController {
     private final BookDtoMapper mapper;
 
     @GetMapping
-    public List<BookDto> getBooks(@RequestParam(required = false, defaultValue = "false") final Boolean available) {
-        final List<Book> books = available ? reservationService.getAvailableBooks() : bookService.getAll();
-        return books.stream().map(mapper::map).toList();
+    public Flux<BookDto> getBooks(@RequestParam(required = false, defaultValue = "false") final Boolean available) {
+        final Flux<Book> books =
+                Boolean.TRUE.equals(available) ? reservationService.getAvailableBooks() : bookService.getAll();
+        return books.map(mapper::map);
     }
 }

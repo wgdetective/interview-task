@@ -1,14 +1,11 @@
 package com.example.interview.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 import java.util.logging.Level;
 
 import com.example.interview.exception.NoAvailableCopiesException;
 import com.example.interview.exception.NoSuchBookException;
 import com.example.interview.exception.NoSuchReservationException;
-import com.example.interview.exception.ReservationException;
 import com.example.interview.exception.ReservationOperationIsNotSupported;
 import com.example.interview.model.Book;
 import com.example.interview.model.Reservation;
@@ -19,6 +16,9 @@ import com.example.interview.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
@@ -29,88 +29,83 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
 
-    private final Object lock = new Object();
-
-    public Reservation reserveBook(final ReservationRequest request) throws ReservationException {
+    public Mono<Reservation> reserveBook(final ReservationRequest request) {
         final var bookId = request.getBookId();
-        try {
-            final Book book = validateAndGetBook(bookId);
-            return reserveBook(request, book);
-        } catch (final NoSuchBookException e) {
-            log.log(Level.SEVERE, "No book with id=" + bookId);
-            throw e;
-        } catch (final NoAvailableCopiesException e) {
-            log.log(Level.SEVERE, "No available copies of book with id=" + bookId);
-            throw e;
-        }
+        return validateAndGetBook(bookId)
+                .flatMap(book -> reserveBook(request, book))
+                .doOnError(NoSuchBookException.class, e -> log.log(Level.SEVERE, "No book with id=" + bookId))
+                .doOnError(NoAvailableCopiesException.class,
+                        e -> log.log(Level.SEVERE, "No available copies of book with id=" + bookId));
     }
 
-    public List<Book> getAvailableBooks() {
+    public Flux<Book> getAvailableBooks() {
         final var books = bookService.getAll();
-        return books.stream().filter(book -> {
-            final long reservedBooksCount = reservationRepository.getCountOfOpenReservationsByBookId(book.getId());
-            return reservedBooksCount < book.getCopies();
-        }).toList();
+        return books.flatMap(book -> reservationRepository.getCountOfOpenReservationsByBookId(book.getId())
+                        .map(reservedBooksCount -> new BookAndCount(book, reservedBooksCount)))
+                .filter(bookAndCount -> bookAndCount.reservedBooksCount < bookAndCount.book.getCopies())
+                .map(BookAndCount::book);
     }
 
-    private Reservation reserveBook(final ReservationRequest request, final Book book)
-            throws NoAvailableCopiesException {
-        synchronized (lock) {
-            final long reservedBooksCount = reservationRepository.getCountOfOpenReservationsByBookId(
-                    request.getBookId());
-            if (reservedBooksCount < book.getCopies()) {
-                final Reservation reservation = Reservation.builder()
-                        .userFullName(request.getUserFullName())
-                        .bookId(request.getBookId())
-                        .createDateTime(LocalDateTime.now())
-                        .reservationStatus(ReservationStatus.SUCCESS)
-                        .build();
-                return reservationRepository.save(reservation);
-            } else {
-                throw new NoAvailableCopiesException();
-            }
-        }
+    private Mono<Reservation> reserveBook(final ReservationRequest request, final Book book) {
+        // thread pool by id
+        // test synchronization
+        return reservationRepository.getCountOfOpenReservationsByBookId(request.getBookId())
+                .flatMap(reservedBooksCount -> {
+                    if (reservedBooksCount < book.getCopies()) {
+                        final Reservation reservation = Reservation.builder()
+                                .userFullName(request.getUserFullName())
+                                .bookId(request.getBookId())
+                                .createDateTime(LocalDateTime.now())
+                                .reservationStatus(ReservationStatus.SUCCESS)
+                                .build();
+                        return reservationRepository.save(reservation);
+                    } else {
+                        return Mono.error(new NoAvailableCopiesException());
+                    }
+                })
+                .subscribeOn(Schedulers.single());
     }
 
-    private Book validateAndGetBook(final String bookId) throws NoSuchBookException {
-        final Optional<Book> book = bookService.getById(bookId);
-        if (book.isPresent()) {
-            return book.get();
-        } else {
-            throw new NoSuchBookException();
-        }
+    private Mono<Book> validateAndGetBook(final String bookId) {
+        return bookService.getById(bookId)
+                .switchIfEmpty(Mono.error(new NoSuchBookException()));
     }
 
-    public List<Reservation> getReservations(final String userFullName) {
+    public Flux<Reservation> getReservations(final String userFullName) {
         return reservationRepository.findAllByUserFullName(userFullName);
     }
 
-    public Reservation updateReservation(final ReservationUpdateRequest request) throws ReservationException {
-        final Reservation reservation = validateAndGetReservation(request);
-        reservation.setReservationStatus(request.getReservationStatus());
-        reservation.setUpdateDateTime(LocalDateTime.now());
-        return reservationRepository.save(reservation);
+    public Mono<Reservation> updateReservation(final ReservationUpdateRequest request) {
+        return validateAndGetReservation(request)
+                .map(r -> {
+                    r.setReservationStatus(request.getReservationStatus());
+                    r.setUpdateDateTime(LocalDateTime.now());
+                    return r;
+                })
+                .flatMap(reservationRepository::save);
     }
 
-    private Reservation validateAndGetReservation(final ReservationUpdateRequest request)
-            throws ReservationException {
+    private Mono<Reservation> validateAndGetReservation(final ReservationUpdateRequest request) {
         if (!request.getReservationStatus().equals(ReservationStatus.CLOSED)) {
             log.log(Level.SEVERE, "Only CLOSE status update is supported");
-            throw new ReservationOperationIsNotSupported();
+            return Mono.error(new ReservationOperationIsNotSupported());
         }
-        final Optional<Reservation> reservationOptional = reservationRepository.findById(request.getReservationId());
-        if (reservationOptional.isEmpty()) {
-            log.log(Level.SEVERE, "No reservation with id=" + request.getReservationId());
-            throw new NoSuchReservationException();
-        } else {
-            final var reservation = reservationOptional.get();
-            if (!reservation.getReservationStatus().equals(ReservationStatus.SUCCESS)) {
-                log.log(Level.SEVERE, "Only SUCCESS status update is supported");
-                throw new ReservationOperationIsNotSupported();
-            } else {
-                return reservation;
-            }
-        }
+        return reservationRepository.findById(request.getReservationId())
+                .switchIfEmpty(Mono.error(new NoSuchReservationException()))
+                .doOnError(NoSuchReservationException.class,
+                        e -> log.log(Level.SEVERE, "No reservation with id=" + request.getReservationId()))
+                .flatMap(r -> {
+                    if (!r.getReservationStatus().equals(ReservationStatus.SUCCESS)) {
+                        log.log(Level.SEVERE, "Only SUCCESS status update is supported");
+                        return Mono.error(new ReservationOperationIsNotSupported());
+                    } else {
+                        return Mono.just(r);
+                    }
+                });
+    }
+
+    private record BookAndCount(Book book, Long reservedBooksCount) {
+
     }
 }
 

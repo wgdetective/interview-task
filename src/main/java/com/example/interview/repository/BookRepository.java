@@ -1,13 +1,12 @@
 package com.example.interview.repository;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.example.interview.model.Book;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface BookRepository {
 
-    List<Book> findAll();
+    Flux<Book> findAll();
 
-    Optional<Book> findById(final String id);
+    Mono<Book> findById(final String id);
 }

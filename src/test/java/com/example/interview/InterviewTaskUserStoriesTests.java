@@ -12,37 +12,33 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+@AutoConfigureWebTestClient
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class InterviewTaskUserStoriesTests {
+class InterviewTaskUserStoriesTests {
 
     @Autowired
-    private MockMvc mockMvc;
+    private WebTestClient client;
 
     @Test
-    void testGetAllBooks() throws Exception {
+    void testGetAllBooks() throws IOException {
         // given
         final var expectedJson = readResource("bdd/getAllBooksOutput.json");
         // when
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/books"))
+        client.get().uri("/v1/books").exchange()
                 // then
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(expectedJson));
+                .expectStatus().isOk()
+                .expectBody()
+                .consumeWith(System.out::println)
+                .json(expectedJson);
     }
 
     @Test
@@ -52,14 +48,16 @@ public class InterviewTaskUserStoriesTests {
         final var requestBodyJson = readResource("bdd/reserveBookInput.json");
         final var expectedJson = readResource("bdd/reserveBookOutput.json");
         // when
-        mockMvc.perform(MockMvcRequestBuilders.post("/v1/reservations")
-                        .content(requestBodyJson)
-                        .contentType(MediaType.APPLICATION_JSON))
+        client.post().uri("/v1/reservations")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(requestBodyJson)
+                .exchange()
                 // then
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(expectedJson))
-                .andExpect(jsonPath("id").exists());
+                .expectStatus().isOk()
+                .expectBody()
+                .consumeWith(System.out::println)
+                .json(expectedJson)
+                .jsonPath("id").exists();
     }
 
     @Test
@@ -69,13 +67,15 @@ public class InterviewTaskUserStoriesTests {
         final var requestBodyJson = readResource("bdd/reserveBookInput.json");
         final var expectedJson = readResource("bdd/reserveThatDoesNotHaveEnoughCopiesOutput.json");
         // when
-        mockMvc.perform(MockMvcRequestBuilders.post("/v1/reservations")
-                        .content(requestBodyJson)
-                        .contentType(MediaType.APPLICATION_JSON))
+        client.post().uri("/v1/reservations")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(requestBodyJson)
+                .exchange()
                 // then
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(content().json(expectedJson));
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .consumeWith(System.out::println)
+                .json(expectedJson);
     }
 
     @Test
@@ -84,11 +84,13 @@ public class InterviewTaskUserStoriesTests {
         // given
         final var expectedJson = readResource("bdd/getAvailableBooksOutput.json");
         // when
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/books?available=true"))
+        client.get().uri("/v1/books?available=true")
+                .exchange()
                 // then
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(expectedJson));
+                .expectStatus().isOk()
+                .expectBody()
+                .consumeWith(System.out::println)
+                .json(expectedJson);
     }
 
     @Test
@@ -97,11 +99,13 @@ public class InterviewTaskUserStoriesTests {
         // given
         final var expectedJson = readResource("bdd/getReservationsOutput.json");
         // when
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/reservations?userFullName=Test User"))
+        client.get().uri("/v1/reservations?userFullName=Test User")
+                .exchange()
                 // then
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(expectedJson));
+                .expectStatus().isOk()
+                .expectBody()
+                .consumeWith(System.out::println)
+                .json(expectedJson);
     }
 
     @Test
@@ -113,23 +117,29 @@ public class InterviewTaskUserStoriesTests {
         final var expectedGetJson = readResource("bdd/getClosedReservationsOutput.json");
         final String reservationId = getReservationId();
         // when
-        mockMvc.perform(MockMvcRequestBuilders.put("/v1/reservations/" + reservationId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBodyJson))
+        client.put().uri("/v1/reservations/" + reservationId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(requestBodyJson)
+                .exchange()
                 // then
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(expectedJson));
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/reservations?userFullName=Test User"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(expectedGetJson));
+                .expectStatus().isOk()
+                .expectBody()
+                .consumeWith(System.out::println)
+                .json(expectedJson);
+        client.get().uri("/v1/reservations?userFullName=Test User")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .consumeWith(System.out::println)
+                .json(expectedGetJson);
     }
 
     private String getReservationId() throws Exception {
-        final var reservationsStr = mockMvc.perform(
-                        MockMvcRequestBuilders.get("/v1/reservations?userFullName=Test User"))
-                .andReturn().getResponse().getContentAsString();
+        final var reservationsStr = client.get().uri("/v1/reservations?userFullName=Test User")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(String.class)
+                .returnResult().getResponseBody();
         final var objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
         final var reservations = objectMapper.readValue(reservationsStr,
@@ -137,7 +147,7 @@ public class InterviewTaskUserStoriesTests {
 
                 });
         assertThat(reservations).isNotNull();
-        assertThat(reservations.isEmpty()).isFalse();
+        assertThat(reservations).isNotEmpty();
         return reservations.get(0).getId();
     }
 

@@ -1,13 +1,13 @@
 package com.example.interview.service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import com.example.interview.model.Book;
 import com.example.interview.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -15,17 +15,14 @@ public class BookService {
 
     private final List<BookRepository> bookRepositories;
 
-    public List<Book> getAll() {
-        final List<Book> result = new ArrayList<>();
-        bookRepositories.forEach(r -> result.addAll(r.findAll()));
-        return result;
+    public Flux<Book> getAll() {
+        return Flux.fromIterable(bookRepositories)
+                .flatMap(BookRepository::findAll);
     }
 
-    public Optional<Book> getById(final String id) {
-        return bookRepositories.stream()
-                .map(r -> r.findById(id))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findAny();
+    public Mono<Book> getById(final String id) {
+        return Flux.fromIterable(bookRepositories)
+                .flatMap(r -> r.findById(id))
+                .next();
     }
 }

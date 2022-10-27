@@ -6,34 +6,32 @@ import com.example.interview.controller.mapper.ReservationUpdateRequestDtoMapper
 import com.example.interview.service.ReservationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@WebMvcTest({ ReservationController.class, ReservationDtoMapper.class, ReservationRequestDtoMapper.class,
+@WebFluxTest({ ReservationController.class, ReservationDtoMapper.class, ReservationRequestDtoMapper.class,
         ReservationUpdateRequestDtoMapper.class })
-public class ReservationControllerTest {
+class ReservationControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private WebTestClient client;
 
     @MockBean
     private ReservationService service;
 
     @Test
-    public void testEmptyFieldsInReservationRequest() throws Exception {
+    void testEmptyFieldsInReservationRequest() {
         // given
         // when
-        mockMvc.perform(MockMvcRequestBuilders.post("/v1/reservations")
-                        .content("{\"bookId\" : null}")
-                        .contentType(MediaType.APPLICATION_JSON))
+        final var responseBody = client.post().uri("/v1/reservations")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("{\"bookId\" : null}")
+                .exchange()
                 // then
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .consumeWith(System.out::println);
     }
 }

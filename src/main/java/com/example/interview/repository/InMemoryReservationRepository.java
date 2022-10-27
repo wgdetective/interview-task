@@ -5,11 +5,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 import com.example.interview.model.Reservation;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Repository
 public class InMemoryReservationRepository implements ReservationRepository {
@@ -21,18 +22,18 @@ public class InMemoryReservationRepository implements ReservationRepository {
     private final Map<String, Reservation> reservationsById = new HashMap<>();
 
     @Override
-    public long getCountOfOpenReservationsByBookId(final String bookId) {
+    public Mono<Long> getCountOfOpenReservationsByBookId(final String bookId) {
         final var reservations = reservationsByBookId.get(bookId);
-        return reservations == null ? 0 : reservations.size();
+        return Mono.just((long) (reservations == null ? 0 : reservations.size()));
     }
 
     @Override
-    public Reservation save(final Reservation reservation) {
+    public Mono<Reservation> save(final Reservation reservation) {
         reservation.setId(UUID.randomUUID().toString());
         putToReservationsByBookId(reservation);
         putToReservationsByUserFullName(reservation);
         putToReservationsById(reservation);
-        return reservation;
+        return Mono.just(reservation);
     }
 
     private void putToReservationsByBookId(final Reservation reservation) {
@@ -60,12 +61,12 @@ public class InMemoryReservationRepository implements ReservationRepository {
     }
 
     @Override
-    public List<Reservation> findAllByUserFullName(final String userFullName) {
-        return reservationsByUserFullName.getOrDefault(userFullName, Collections.emptyList());
+    public Flux<Reservation> findAllByUserFullName(final String userFullName) {
+        return Flux.fromIterable(reservationsByUserFullName.getOrDefault(userFullName, Collections.emptyList()));
     }
 
     @Override
-    public Optional<Reservation> findById(final String id) {
-        return reservationsById.containsKey(id) ? Optional.of(reservationsById.get(id)) : Optional.empty();
+    public Mono<Reservation> findById(final String id) {
+        return reservationsById.containsKey(id) ? Mono.just(reservationsById.get(id)) : Mono.empty();
     }
 }

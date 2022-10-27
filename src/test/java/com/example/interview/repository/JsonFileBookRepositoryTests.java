@@ -22,8 +22,8 @@ class JsonFileBookRepositoryTests {
     }
 
     @Test
-    public void testFindAll() {
-        final var books = repository.findAll();
+    void testFindAll() {
+        final var books = repository.findAll().collectList().block();
         assertThat(books).isNotNull();
         assertThat(books.size()).isEqualTo(3);
         for (final Book book : books) {

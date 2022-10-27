@@ -2,7 +2,6 @@ package com.example.interview.repository;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -13,6 +12,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Repository
 @RequiredArgsConstructor
@@ -36,12 +37,13 @@ public class JsonFileBookRepository implements BookRepository {
     }
 
     @Override
-    public List<Book> findAll() {
-        return entities.stream().map(mapper::map).toList();
+    public Flux<Book> findAll() {
+        return Flux.fromStream(entities.stream().map(mapper::map));
     }
 
     @Override
-    public Optional<Book> findById(final String id) {
-        return entities.stream().filter(b -> b.getId().equals(id)).findAny().map(mapper::map);
+    public Mono<Book> findById(final String id) {
+        final var optionalBook = entities.stream().filter(b -> b.getId().equals(id)).findAny().map(mapper::map);
+        return optionalBook.map(Mono::just).orElseGet(Mono::empty);
     }
 }

@@ -1,7 +1,6 @@
 package com.example.interview.controller;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import com.example.interview.controller.mapper.ReservationDtoMapper;
 import com.example.interview.controller.mapper.ReservationRequestDtoMapper;
@@ -24,6 +23,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/v1/reservations")
@@ -39,42 +40,43 @@ public class ReservationController {
     private final ReservationUpdateRequestDtoMapper updateRequestMapper;
 
     @PostMapping
-    public ResponseEntity<ReservationDto> reserveBook(@RequestBody final ReservationRequestDto reservationRequestDto) {
-        Reservation reservation;
-        try {
-            reservation = reservationService.reserveBook(requestMapper.map(reservationRequestDto));
-            reservation.setMessage("Book is successfully booked.");
-            return ResponseEntity.ok(mapper.map(reservation));
-        } catch (final ReservationException e) {
-            reservation = Reservation.builder()
-                    .bookId(reservationRequestDto.getBookId())
-                    .userFullName(reservationRequestDto.getUserFullName())
-                    .reservationStatus(ReservationStatus.FAIL)
-                    .createDateTime(LocalDateTime.now())
-                    .build();
-            reservation.setMessage(getMessageByException(e));
-            return ResponseEntity.badRequest().body(mapper.map(reservation));
-        }
+    public Mono<ResponseEntity<ReservationDto>> reserveBook(
+            @RequestBody final ReservationRequestDto reservationRequestDto) {
+        return reservationService.reserveBook(requestMapper.map(reservationRequestDto))
+                .map(r -> {
+                    r.setMessage("Book is successfully booked.");
+                    return ResponseEntity.ok(mapper.map(r));
+                })
+                .onErrorResume(ReservationException.class, e -> {
+                    var reservation = Reservation.builder()
+                            .bookId(reservationRequestDto.getBookId())
+                            .userFullName(reservationRequestDto.getUserFullName())
+                            .reservationStatus(ReservationStatus.FAIL)
+                            .createDateTime(LocalDateTime.now())
+                            .build();
+                    reservation.setMessage(getMessageByException(e));
+                    return Mono.just(ResponseEntity.badRequest().body(mapper.map(reservation)));
+                });
     }
 
     @GetMapping
-    public List<ReservationDto> getReservations(final String userFullName) {
-        return reservationService.getReservations(userFullName).stream().map(mapper::map).toList();
+    public Flux<ReservationDto> getReservations(final String userFullName) {
+        return reservationService.getReservations(userFullName).map(mapper::map);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReservationDto> updateReservation(@PathVariable final String id,
+    public Mono<ResponseEntity<ReservationDto>> updateReservation(@PathVariable final String id,
             @RequestBody final ReservationUpdateRequestDto reservationRequestDto) {
-        try {
-            return ResponseEntity.ok(mapper.map(
-                    reservationService.updateReservation(updateRequestMapper.map(reservationRequestDto, id))));
-        } catch (final ReservationException e) {
-            final var reservation = Reservation.builder()
-                    .reservationStatus(ReservationStatus.FAIL)
-                    .message(e.getClass().getName() + " " + e.getMessage())
-                    .build();
-            return ResponseEntity.badRequest().body(mapper.map(reservation));
-        }
+        return reservationService.updateReservation(updateRequestMapper.map(reservationRequestDto, id))
+                .map(mapper::map)
+                .map(ResponseEntity::ok)
+                .onErrorResume(ReservationException.class, e -> {
+                    final var reservation = Reservation.builder()
+                            .reservationStatus(ReservationStatus.FAIL)
+                            .message(e.getClass().getName() + " " + e.getMessage())
+                            .build();
+                    return Mono.just(ResponseEntity.badRequest().body(mapper.map(reservation)));
+                });
     }
 
     private String getMessageByException(final ReservationException e) {
