@@ -8,6 +8,11 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
+ext {
+    mapstructVersion = "1.5.3.Final"
+    lombokVersion = "1.18.20"
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -19,17 +24,15 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}", "org.springframework.boot:spring-boot-starter-web"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
 
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
 
-    implementation 'org.mapstruct:mapstruct:1.5.2.Final'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
 
-    testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}", "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 }
 
 test {
