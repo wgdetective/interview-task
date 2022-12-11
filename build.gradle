@@ -11,7 +11,7 @@ sourceCompatibility = '17'
 
 ext {
     mapstructVersion = "1.5.3.Final"
-    lombokVersion = "1.18.20"
+    lombokVersion = "1.18.24"
 }
 
 configurations {
@@ -42,7 +42,7 @@ test {
 
 publishing {
     publications {
-        myCoolLibrary(MavenPublication) {
+        maven(MavenPublication) {
             from components.java
         }
     }
