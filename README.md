@@ -1,5 +1,18 @@
 # Interview task
 
+## How to use it
+In current repositories you could find some tasks that could be used for interviewing of candidates.
+
+Different tasks and different stages could be found in different branches.
+
+In general - each task is just writing of classical spring boot application with 3 layered architecture.
+Candidate could use either maven either gradle build tool.
+Using different snapshots of the same task you could also ask candidate to make code review of already written code.
+
+Working on practical tasks is a great opportunity to see how candidate works, googles, writing (or not) tests, asking questions and etc.
+
+For evaluation of candidates next form could be used: https://docs.google.com/spreadsheets/d/1dTSHLjoJZht2GeUgEhfN4wVBZWzJXYRfqIx9iVFdusA/edit?usp=sharing
+
 ## Task 1. Q&A
 
 Rest application for conducting surveys.
